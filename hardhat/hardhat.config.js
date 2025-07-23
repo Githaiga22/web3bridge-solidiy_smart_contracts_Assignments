@@ -1,24 +1,45 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@nomicfoundation/hardhat-verify");
+
 require("dotenv").config();
 
+const CELOSCAN_API_KEY = process.env.CELOSCAN_API_KEY;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+
 module.exports = {
-  solidity: "0.8.20",
+  solidity: "0.8.19",
   networks: {
+    alfajores: {
+      url: "https://alfajores-forno.celo-testnet.org",
+      accounts: [PRIVATE_KEY],
+      chainId: 44787,
+    },
     celo: {
-      url: process.env.CELO_ALFAJORES_RPC,
-      accounts: [process.env.PRIVATE_KEY],
+      url: "https://forno.celo.org",
+      accounts: [PRIVATE_KEY],
+      chainId: 42220,
     },
   },
   etherscan: {
     apiKey: {
-      celo: process.env.CELOSCAN_API_KEY,
+      // 👇 This tells Hardhat to use the same key for celo networks
+      celo: CELOSCAN_API_KEY,
+      alfajores: CELOSCAN_API_KEY,
     },
     customChains: [
       {
         network: "celo",
+        chainId: 42220,
+        urls: {
+          apiURL: "https://api.celoscan.io/api",
+          browserURL: "https://celoscan.io",
+        },
+      },
+      {
+        network: "alfajores",
         chainId: 44787,
         urls: {
-          apiURL: "https://alfajores.celoscan.io/api",
+          apiURL: "https://api-alfajores.celoscan.io/api",
           browserURL: "https://alfajores.celoscan.io",
         },
       },
